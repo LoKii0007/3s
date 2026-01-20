@@ -190,10 +190,10 @@ const TreeNode: React.FC<NodeProps> = ({
             styles,
             isExpanded ? "opacity-100" : "opacity-[0.32]",
             matchingIds.has(node.id) &&
-              "ring-2 ring-yellow-400 ring-offset-1 opacity-100",
+              "ring-2 ring-black/70 ring-offset-1 opacity-100",
             !isExpanded &&
               hasMatchingDescendantsIds.has(node.id) &&
-              "ring-2 ring-orange-500 ring-offset-2 opacity-100 animate-pulse shadow-lg shadow-orange-300/50",
+              "ring-2 ring-red-500 ring-offset-2 opacity-100 animate-pulse ",
             "hover:shadow-[0px_4px_9px_0px_rgba(0,0,0,0.1),0px_16px_16px_0px_rgba(0,0,0,0.09),0px_35px_21px_0px_rgba(0,0,0,0.05),0px_63px_25px_0px_rgba(0,0,0,0.01),0px_98px_28px_0px_rgba(0,0,0,0)] border-[1.5px] hover:border-[#09090B]",
           )}
           onClick={() => hasChildren && toggle(node.id)}
@@ -216,7 +216,7 @@ const TreeNode: React.FC<NodeProps> = ({
           )}
           {/* Indicator badge for closed nodes containing search results */}
           {!isExpanded && hasMatchingDescendantsIds.has(node.id) && (
-            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white text-[10px] font-bold shadow-md">
+            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-md">
               !
             </span>
           )}
