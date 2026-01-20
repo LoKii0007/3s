@@ -1,73 +1,91 @@
-# React + TypeScript + Vite
+# 3S Fleet Management
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application built with Vite, TypeScript, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## How to Run the Project
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
 
-## React Compiler
+- Node.js (v18 or higher recommended)
+- npm or yarn
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Installation
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Available Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# Start development server
+npm run dev
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Run linting
+npm run lint
 ```
+
+## Component Structure
+
+This project follows a **feature-based component structure**, organizing code by feature rather than by type.
+
+```
+src/
+├── components/
+│   ├── features/           # Feature-specific components
+│   │   └── fleetManagement/
+│   │       ├── components/  # UI components for this feature
+│   │       │   ├── HighlightText.tsx
+│   │       │   ├── SearchBar.tsx
+│   │       │   ├── TreeContent.tsx
+│   │       │   └── TreeNodes.tsx
+│   │       ├── types/       # TypeScript types for this feature
+│   │       │   └── index.ts
+│   │       └── utils/       # Utility functions and constants
+│   │           ├── constants.ts
+│   │           └── helper.ts
+│   │
+│   └── shared/             # Reusable components across features
+│       ├── Breadcrumb.tsx
+│       ├── Footer.tsx
+│       └── sidebar/
+│           ├── components/
+│           │   ├── Sidebar.tsx
+│           │   ├── SidebarFooter.tsx
+│           │   ├── SidebarLogo.tsx
+│           │   ├── SidebarNav.tsx
+│           │   └── SidebarUser.tsx
+│           ├── constants/
+│           │   └── menuItems.tsx
+│           ├── types/
+│           │   └── index.ts
+│           └── index.ts
+│
+├── layouts/                # Layout components
+│   └── MainLayout.tsx
+│
+├── screens/                # Page/Screen components
+│   └── FleetManagement.tsx
+│
+├── lib/                    # Shared utilities
+│   └── utils.ts
+│
+├── App.tsx
+├── App.css
+├── main.tsx
+└── index.css
+```
+
+### Structure Benefits
+
+- **Scalability**: Easy to add new features without affecting existing code
+- **Maintainability**: Related code is co-located, making it easier to understand and modify
+- **Encapsulation**: Each feature contains its own components, types, and utilities
+- **Reusability**: Shared components are separated for use across multiple features
