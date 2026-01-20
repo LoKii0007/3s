@@ -39,12 +39,28 @@ const childVariants = {
   },
 };
 
-const TreeNode: React.FC<NodeProps> = ({ node, depth, expanded, toggle, index, parentIndex, parentCount, motionVariants, searchQuery = '', matchingIds = new Set(), hasMatchingDescendantsIds = new Set(), onWidthReport, maxSiblingWidth = 0 }) => {
+const TreeNode: React.FC<NodeProps> = ({
+  node,
+  depth,
+  expanded,
+  toggle,
+  index,
+  parentIndex,
+  parentCount,
+  motionVariants,
+  searchQuery = "",
+  matchingIds = new Set(),
+  hasMatchingDescendantsIds = new Set(),
+  onWidthReport,
+  maxSiblingWidth = 0,
+}) => {
   const parentElement = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [parentWidth, setParentWidth] = useState(0);
   const [parentHeight, setParentHeight] = useState(0);
-  const [childWidths, setChildWidths] = useState<Map<string, number>>(new Map());
+  const [childWidths, setChildWidths] = useState<Map<string, number>>(
+    new Map(),
+  );
   const [ownWidth, setOwnWidth] = useState(0);
 
   const hasChildren = !!node.children && node.children.length > 0;
@@ -52,18 +68,18 @@ const TreeNode: React.FC<NodeProps> = ({ node, depth, expanded, toggle, index, p
   const styles = nodeTypeStyles[node.type as EquipmentNodeType];
 
   // Calculate max width among children (siblings of each other)
-  const maxChildWidth = childWidths.size > 0 ? Math.max(...childWidths.values()) : 0;
-  const connectorLineWidth = maxSiblingWidth > 0 ? (maxSiblingWidth - ownWidth) + 16 : 16;
-
+  const maxChildWidth =
+    childWidths.size > 0 ? Math.max(...childWidths.values()) : 0;
+  const connectorLineWidth =
+    maxSiblingWidth > 0 ? maxSiblingWidth - ownWidth + 16 : 16;
 
   const handleChildWidthReport = useCallback((id: string, width: number) => {
-    setChildWidths(prev => {
+    setChildWidths((prev) => {
       const newMap = new Map(prev);
       newMap.set(id, width);
       return newMap;
     });
   }, []);
-
 
   useEffect(() => {
     if (buttonRef.current) {
@@ -74,7 +90,6 @@ const TreeNode: React.FC<NodeProps> = ({ node, depth, expanded, toggle, index, p
       }
     }
   }, [node.id, onWidthReport]);
-
 
   const containerVariants = {
     open: {
@@ -119,56 +134,67 @@ const TreeNode: React.FC<NodeProps> = ({ node, depth, expanded, toggle, index, p
   const RootComponent = motionVariants ? motion.div : "div";
   const rootProps = motionVariants
     ? {
-      variants: motionVariants,
-      initial: "closed" as const,
-      animate: "open" as const,
-      exit: "closed" as const,
-    }
+        variants: motionVariants,
+        initial: "closed" as const,
+        animate: "open" as const,
+        exit: "closed" as const,
+      }
     : {};
 
   const isLastChild = parentCount !== undefined && index === parentCount - 1;
 
   return (
-    <RootComponent className={cn("flex gap-2 items-center pr-10", isLastChild && "pb-10")} {...rootProps}>
-
+    <RootComponent
+      className={cn("flex gap-2 items-center pr-10", isLastChild && "pb-10")}
+      {...rootProps}
+    >
       {/* //? parent node and edges  */}
       <div ref={parentElement} className="flex w-full h-full items-center">
-        {depth > 0 && parentIndex !== undefined &&
+        {depth > 0 && parentIndex !== undefined && (
           <div className="h-full flex items-center justify-center min-w-10">
-            {index !== parentIndex ?
-              <div className={`w-full relative h-full border-[#C7C7C7] border-l-2 ${index < parentIndex ? 'translate-y-1/2 rounded-tl-2xl border-t-2 ' : '-translate-y-1/2 border-b-2 rounded-bl-2xl'}`}>
-                {
-                  index !== parentCount! - 1 &&
-                  <div className={`absolute bottom-0 left-0 w-0.5 ${(-index + parentIndex) > 0 ? 'h-0' : 'h-20'} translate-y-1/2 -translate-x-full bg-[#C7C7C7]`}></div>
-                }
+            {index !== parentIndex ? (
+              <div
+                className={`w-full relative h-full border-[#C7C7C7] border-l-2 ${index < parentIndex ? "translate-y-1/2 rounded-tl-2xl border-t-2 " : "-translate-y-1/2 border-b-2 rounded-bl-2xl"}`}
+              >
+                {index !== parentCount! - 1 && (
+                  <div
+                    className={`absolute bottom-0 left-0 w-0.5 ${-index + parentIndex > 0 ? "h-0" : "h-20"} translate-y-1/2 -translate-x-full bg-[#C7C7C7]`}
+                  ></div>
+                )}
 
                 {/* //? bottom curve for children node connection with parent node  */}
-                {
-                  index === parentIndex + 1 &&
-                  <div className={`absolute -bottom-1 left-0 w-full h-full -translate-y-full -translate-x-full border-[#C7C7C7] border-t-2 border-r-2 rounded-tr-2xl`}></div>
-                }
+                {index === parentIndex + 1 && (
+                  <div
+                    className={`absolute -bottom-1 left-0 w-full h-full -translate-y-full -translate-x-full border-[#C7C7C7] border-t-2 border-r-2 rounded-tr-2xl`}
+                  ></div>
+                )}
 
                 {/* //? top curve for children node connection with parent node  */}
-                {
-                  index === parentIndex - 1 &&
-                  <div className={`absolute -top-[3px] left-0 w-full h-full translate-y-full -translate-x-full border-[#C7C7C7] border-b-2 border-r-2 rounded-br-2xl`}></div>
-                }
+                {index === parentIndex - 1 && (
+                  <div
+                    className={`absolute -top-[3px] left-0 w-full h-full translate-y-full -translate-x-full border-[#C7C7C7] border-b-2 border-r-2 rounded-br-2xl`}
+                  ></div>
+                )}
               </div>
-              :
+            ) : (
               <div className="w-full h-0.5 bg-[#C7C7C7]"></div>
-            }
-          </div>}
+            )}
+          </div>
+        )}
         <button
           ref={buttonRef}
           type="button"
           className={cn(
-            "group inline-flex items-center relative font-[Poppins] z-20 gap-2 rounded-lg px-6 border-[1.5px] py-[6px] text-base font-medium h-fit whitespace-nowrap",
-            "transition-all duration-150 hover:scale-105",
-            "hover:brightness-105",
+            "group inline-flex items-center relative leading-[100%] tracking-[0px] font-normal z-20 gap-2 rounded-lg px-6 border-[1.5px] py-[6px] text-base h-fit whitespace-nowrap",
+            "transition-all duration-300 ease-in-out",
             styles,
             isExpanded ? "opacity-100" : "opacity-[0.32]",
-            matchingIds.has(node.id) && "ring-2 ring-yellow-400 ring-offset-1 opacity-100",
-            !isExpanded && hasMatchingDescendantsIds.has(node.id) && "ring-2 ring-orange-500 ring-offset-2 opacity-100 animate-pulse shadow-lg shadow-orange-300/50",
+            matchingIds.has(node.id) &&
+              "ring-2 ring-yellow-400 ring-offset-1 opacity-100",
+            !isExpanded &&
+              hasMatchingDescendantsIds.has(node.id) &&
+              "ring-2 ring-orange-500 ring-offset-2 opacity-100 animate-pulse shadow-lg shadow-orange-300/50",
+            "hover:shadow-[0px_4px_9px_0px_rgba(0,0,0,0.1),0px_16px_16px_0px_rgba(0,0,0,0.09),0px_35px_21px_0px_rgba(0,0,0,0.05),0px_63px_25px_0px_rgba(0,0,0,0.01),0px_98px_28px_0px_rgba(0,0,0,0)] border-[1.5px] hover:border-[#09090B]",
           )}
           onClick={() => hasChildren && toggle(node.id)}
         >
@@ -181,7 +207,11 @@ const TreeNode: React.FC<NodeProps> = ({ node, depth, expanded, toggle, index, p
           </span>
           {hasChildren && (
             <span className="flex h-3 w-3 absolute items-center bottom-0.5 right-0.5 justify-center rounded-full bg-white text-[10px] leading-none">
-              {isExpanded ? <Minus className="w-3 h-3 text-[#79747E]" /> : <Plus className="w-3 h-3 text-[#79747E]" />}
+              {isExpanded ? (
+                <Minus className="w-3 h-3 text-[#79747E]" />
+              ) : (
+                <Plus className="w-3 h-3 text-[#79747E]" />
+              )}
             </span>
           )}
           {/* Indicator badge for closed nodes containing search results */}
@@ -192,16 +222,14 @@ const TreeNode: React.FC<NodeProps> = ({ node, depth, expanded, toggle, index, p
           )}
         </button>
 
-        {hasChildren && isExpanded &&
-          <div 
+        {hasChildren && isExpanded && (
+          <div
             className="h-full flex min-h-8 items-center justify-center w-full z-10"
             style={{ minWidth: `${connectorLineWidth}px` }}
           >
-            <div 
-              className="bg-[#C7C7C7] h-0.5 w-full"
-            ></div>
+            <div className="bg-[#C7C7C7] h-0.5 w-full"></div>
           </div>
-        }
+        )}
       </div>
 
       {/* //? children */}
@@ -211,7 +239,7 @@ const TreeNode: React.FC<NodeProps> = ({ node, depth, expanded, toggle, index, p
             className="flex absolute "
             style={{
               transform: `translateX(${parentWidth}px)`,
-              top: `${(parentHeight + 32) * (index > 0 ? index - 1 : 0)}px`
+              top: `${(parentHeight + 32) * (index > 0 ? index - 1 : 0)}px`,
             }}
           >
             <motion.div

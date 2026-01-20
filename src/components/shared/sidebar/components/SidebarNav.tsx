@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { menuItems } from '../constants/menuItems';
 import { ChevronDown } from 'lucide-react';
@@ -7,18 +7,18 @@ const SidebarNav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleItemClick = (item: typeof menuItems[0]) => {
+  const handleItemClick = useCallback((item: typeof menuItems[0]) => {
     if (item.path) {
       navigate(item.path);
     }
-  };
+  }, [navigate]);
 
-  const isActive = (item: typeof menuItems[0]) => {
+  const isActive = useCallback((item: typeof menuItems[0]) => {
     if (item.path === '/') {
       return location.pathname === '/';
     }
     return item.path && location.pathname.startsWith(item.path);
-  };
+  }, [location])
 
   return (
     <nav className="flex-1 p-2 font-[Poppins]">
@@ -30,7 +30,7 @@ const SidebarNav: React.FC = () => {
               <button
                 onClick={() => handleItemClick(item)}
                 className={`
-                  w-full flex items-center p-2 gap-2 rounded-lg text-sm tracking-[0.25px] leading-[20px]
+                  w-full flex items-center p-2 gap-2 rounded-lg text-sm font-normal tracking-[0.25px] leading-[20px]
                   transition-colors duration-150
                   ${
                     active

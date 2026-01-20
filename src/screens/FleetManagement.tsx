@@ -72,7 +72,7 @@ const FleetManager = () => {
   }, [zoom, getDistance])
 
   return (
-    <div ref={containerRef} className='w-full h-full bg-[radial-gradient(circle,rgba(0,0,0,0.1)_2px,transparent_1px)] bg-[size:15px_15px] relative touch-none'>
+    <div ref={containerRef} className='w-full h-full bg-[radial-gradient(circle,rgba(0,0,0,0.1)_2px,transparent_1px)] bg-[size:15px_15px] font-[Poppins] relative touch-none'>
       <SearchBar value={searchQuery} onChange={setSearchQuery} />
 
       <div className='w-20 z-20 bg-linear-to-r from-[#ffffff] to-[#FFFFFF00] h-full absolute top-0 left-0'></div>
@@ -120,7 +120,7 @@ const FleetManager = () => {
 
 
       {/* content  */}
-      <div ref={scrollContainerRef} className='w-full h-full overflow-auto relative z-10 p-4 pt-24'>
+      <div ref={scrollContainerRef} className='w-full h-full overflow-auto relative z-10 p-4 pt-24  tree-content'>
         <div
           style={{
             transform: `scale(${zoom})`,

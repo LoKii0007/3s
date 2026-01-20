@@ -5,7 +5,7 @@ const SidebarFooter: React.FC = () => {
     <div className="pt-2 pb-4 px-[13px] gap-1">
       <div className=''>
         <div className='flex text-base'>
-          <div className="font-semibold text-transparent stroke-2 bg-clip-text bg-linear-to-r from-[#003366] to-[#003366]">Stream</div>
+          <div className="font-semibold text-transparent stroke-2 bg-clip-text bg-linear-to-r from-[#003366] to-[#5583F7]">Stream</div>
           <div className='text-[#4FA345]'>.</div>
         </div>
         <div className='flex text-[7px] items-center gap-0.5'>

@@ -24,7 +24,7 @@ const Breadcrum = () => {
                     {/* <Link to={name.path} key={name.path}> */}
                         <span className={`text-sm tracking-[0.25px] leading-[20px] ${index !== pathnames.length - 1 ? 'text-[#71717A] ' : 'text-[#5583F7]'}`}>{name.name}</span>
                     {/* </Link> */}
-                    {index !== pathnames.length - 1 && <span className='text-sm text-[#111827]'>/</span>}
+                    {index !== pathnames.length - 1 && <span className='text-sm rotate-45 text-[#71717A]'>|</span>}
                 </Fragment>
             ))}
         </div>
