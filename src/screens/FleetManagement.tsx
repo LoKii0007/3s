@@ -6,26 +6,26 @@ import { Minus, Plus, Maximize, ChevronUp } from 'lucide-react'
 const FleetManager = () => {
   const [zoom, setZoom] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
-  const minZoom = 0.25
-  const maxZoom = 2
-  const zoomStep = 0.25
+  const MIN_ZOOM = 0.25
+  const MAX_ZOOM = 2
+  const ZOOM_STEP = 0.25
 
   const containerRef = useRef<HTMLDivElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const initialPinchDistance = useRef<number | null>(null)
   const initialZoom = useRef<number>(zoom)
 
-  const handleScrollToTop = () => {
+  const handleScrollToTop = useCallback(() => {
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  }, [scrollContainerRef])
 
-  const handleZoomIn = () => {
-    setZoom((prev) => Math.min(prev + zoomStep, maxZoom))
-  }
+  const handleZoomIn = useCallback(() => {
+    setZoom((prev) => Math.min(prev + ZOOM_STEP, MAX_ZOOM))
+  }, [zoom, ZOOM_STEP, MAX_ZOOM])
 
-  const handleZoomOut = () => {
-    setZoom((prev) => Math.max(prev - zoomStep, minZoom))
-  }
+  const handleZoomOut = useCallback(() => {
+    setZoom((prev) => Math.max(prev - ZOOM_STEP, MIN_ZOOM))
+  }, [zoom, ZOOM_STEP, MIN_ZOOM])
 
   const getDistance = useCallback((touches: TouchList) => {
     if (touches.length < 2) return 0
@@ -51,7 +51,7 @@ const FleetManager = () => {
         e.preventDefault()
         const currentDistance = getDistance(e.touches)
         const scale = currentDistance / initialPinchDistance.current
-        const newZoom = Math.min(Math.max(initialZoom.current * scale, minZoom), maxZoom)
+        const newZoom = Math.min(Math.max(initialZoom.current * scale, MIN_ZOOM), MAX_ZOOM)
         setZoom(newZoom)
       }
     }
@@ -90,7 +90,7 @@ const FleetManager = () => {
             <button
               type='button'
               onClick={handleZoomIn}
-              disabled={zoom >= maxZoom}
+              disabled={zoom >= MAX_ZOOM}
               className='p-1.5 flex items-center justify-center bg-white rounded-lg shadow-[0px_0px_32px_0px_rgba(0,0,0,0.08)] border border-[#E8E8E8] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors'
               title='Zoom In'
             >
@@ -99,7 +99,7 @@ const FleetManager = () => {
             <button
               type='button'
               onClick={handleZoomOut}
-              disabled={zoom <= minZoom}
+              disabled={zoom <= MIN_ZOOM}
               className='p-1.5 flex items-center justify-center bg-white rounded-lg shadow-[0px_0px_32px_0px_rgba(0,0,0,0.08)] border border-[#E8E8E8] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors'
               title='Zoom Out'
             >

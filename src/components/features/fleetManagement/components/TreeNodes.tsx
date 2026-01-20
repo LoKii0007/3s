@@ -1,5 +1,5 @@
 import type { EquipmentNode, EquipmentNodeType } from "../types";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { cn } from "../../../../lib/utils";
 import { motion, AnimatePresence } from "motion/react";
 import { Minus, Plus } from "lucide-react";
@@ -26,6 +26,7 @@ const childVariants = {
   open: {
     opacity: 1,
     y: 0,
+    blur: 0,
     transition: {
       duration: 0.3,
     },
@@ -33,6 +34,7 @@ const childVariants = {
   closed: {
     opacity: 0,
     y: -10,
+    blur: 10,
     transition: {
       duration: 0.2,
     },
@@ -63,15 +65,15 @@ const TreeNode: React.FC<NodeProps> = ({
   );
   const [ownWidth, setOwnWidth] = useState(0);
 
-  const hasChildren = !!node.children && node.children.length > 0;
-  const isExpanded = expanded.has(node.id);
-  const styles = nodeTypeStyles[node.type as EquipmentNodeType];
+  const hasChildren = useMemo(() => !!node.children && node.children.length > 0, [node.children]);
+  const isExpanded = useMemo(() => expanded.has(node.id), [expanded, node.id]);
+  const styles = useMemo(() => nodeTypeStyles[node.type as EquipmentNodeType], [node.type]);
 
   // Calculate max width among children (siblings of each other)
   const maxChildWidth =
-    childWidths.size > 0 ? Math.max(...childWidths.values()) : 0;
+    useMemo(() => childWidths.size > 0 ? Math.max(...childWidths.values()) : 0, [childWidths]);
   const connectorLineWidth =
-    maxSiblingWidth > 0 ? maxSiblingWidth - ownWidth + 16 : 16;
+    useMemo(() => maxSiblingWidth > 0 ? maxSiblingWidth - ownWidth + 16 : 16, [maxSiblingWidth, ownWidth]);
 
   const handleChildWidthReport = useCallback((id: string, width: number) => {
     setChildWidths((prev) => {
@@ -94,6 +96,7 @@ const TreeNode: React.FC<NodeProps> = ({
   const containerVariants = {
     open: {
       opacity: 1,
+      blur: 0,
       transition: {
         staggerChildren: 0.3,
         delayChildren: 0.3,
@@ -101,6 +104,7 @@ const TreeNode: React.FC<NodeProps> = ({
     },
     closed: {
       opacity: 0,
+      blur: 10,
       transition: {
         staggerChildren: 0.05,
         staggerDirection: -1,
@@ -131,17 +135,17 @@ const TreeNode: React.FC<NodeProps> = ({
     };
   }, [isExpanded]);
 
-  const RootComponent = motionVariants ? motion.div : "div";
-  const rootProps = motionVariants
+  const RootComponent = useMemo(() => motionVariants ? motion.div : "div", [motionVariants]);
+  const rootProps = useMemo(() => motionVariants
     ? {
-        variants: motionVariants,
-        initial: "closed" as const,
-        animate: "open" as const,
-        exit: "closed" as const,
-      }
-    : {};
+      variants: motionVariants,
+      initial: "closed" as const,
+      animate: "open" as const,
+      exit: "closed" as const,
+    }
+    : {}, [motionVariants]);
 
-  const isLastChild = parentCount !== undefined && index === parentCount - 1;
+  const isLastChild = useMemo(() => parentCount !== undefined && index === parentCount - 1, [parentCount, index]);
 
   return (
     <RootComponent
@@ -190,10 +194,10 @@ const TreeNode: React.FC<NodeProps> = ({
             styles,
             isExpanded ? "opacity-100" : "opacity-[0.32]",
             matchingIds.has(node.id) &&
-              "ring-2 ring-black/70 ring-offset-1 opacity-100",
+            "ring-2 ring-black/70 ring-offset-1 opacity-100",
             !isExpanded &&
-              hasMatchingDescendantsIds.has(node.id) &&
-              "ring-2 ring-red-500 ring-offset-2 opacity-100 animate-pulse ",
+            hasMatchingDescendantsIds.has(node.id) &&
+            "ring-2 ring-red-500 ring-offset-2 opacity-100 animate-pulse ",
             "hover:shadow-[0px_4px_9px_0px_rgba(0,0,0,0.1),0px_16px_16px_0px_rgba(0,0,0,0.09),0px_35px_21px_0px_rgba(0,0,0,0.05),0px_63px_25px_0px_rgba(0,0,0,0.01),0px_98px_28px_0px_rgba(0,0,0,0)] border-[1.5px] hover:border-[#09090B]",
           )}
           onClick={() => hasChildren && toggle(node.id)}

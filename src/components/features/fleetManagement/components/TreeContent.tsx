@@ -1,15 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { equipmentTreeData } from '../utils/constants';
 import { getSiblingIds, initialExpandedIds, filterTreeBySearch } from '../utils/helper';
 import TreeNode from './TreeNodes';
-import { motion } from 'motion/react';
 
 interface EquipmentTreeProps {
   searchQuery?: string;
 }
 
-const EquipmentTree = ({ searchQuery = '' }: EquipmentTreeProps) => {
-  // Initially keep only the first branch of siblings open by default
+const TreeContent = ({ searchQuery = '' }: EquipmentTreeProps) => {
   const [expanded, setExpanded] = useState<Set<string>>(
     () => new Set(initialExpandedIds()),
   );
@@ -19,12 +17,7 @@ const EquipmentTree = ({ searchQuery = '' }: EquipmentTreeProps) => {
     return filterTreeBySearch(equipmentTreeData, searchQuery);
   }, [searchQuery]);
 
-  const containerVariants = {
-    open: { opacity: 1 },
-    closed: { opacity: 0, transition: { duration: 0.5 } },
-  };
-
-  const toggleNode = (id: string) => {
+  const toggleNode = useCallback((id: string) => {
     setExpanded((prev) => {
       const next = new Set(prev);
       const isCurrentlyExpanded = next.has(id);
@@ -40,12 +33,11 @@ const EquipmentTree = ({ searchQuery = '' }: EquipmentTreeProps) => {
       }
       return next;
     });
-  };
+  }, []);
 
   return (
     <div className="relative z-10 flex h-full w-full items-start justify-start ps-6">
-      <motion.div variants={containerVariants}
-        animate={expanded.size > 0 ? 'open' : 'closed'}
+      <div 
         className="flex flex-col gap-6 relative">
         {filteredTree.map((root, index) => (
           <TreeNode
@@ -62,10 +54,10 @@ const EquipmentTree = ({ searchQuery = '' }: EquipmentTreeProps) => {
             hasMatchingDescendantsIds={hasMatchingDescendantsIds}
           />
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 };
 
-export default EquipmentTree;
+export default TreeContent;
 
